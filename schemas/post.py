@@ -1,9 +1,10 @@
 from datetime import datetime
-from pydantic import BaseModel
+from typing import Optional
+from sqlmodel import SQLModel, Field
 
 
-class Post(BaseModel):
-    id: int = 1
+class Posts(SQLModel, table=True):
+    id: Optional[int] = Field(default=None, primary_key=True)
     title: str
     content: str
     published: bool = True
