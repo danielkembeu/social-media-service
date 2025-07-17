@@ -58,6 +58,7 @@ async def lifespan(app: FastAPI):
 def get_all_posts(session: SessionDep):
     statement = select(Posts)
     all_posts = session.exec(statement).all()
+
     return {"message": "All posts retrieved!", "data": all_posts}
 
 
@@ -67,6 +68,7 @@ def create_post(payload: Posts, session: SessionDep):
     session.add(payload)
     session.commit()
     session.refresh(payload)
+
     return {"message": "Posts created successfully!", "data": payload}
 
 
@@ -74,11 +76,13 @@ def create_post(payload: Posts, session: SessionDep):
 @app.get("/posts/{post_id}", status_code=status.HTTP_200_OK)
 def get_single_post(post_id: int, session: SessionDep):
     post = session.get(Posts, post_id)
+
     if post is None:
         raise HTTPException(
             status_code=status.HTTP_404_NOT_FOUND,
             detail={"message": "Post not found !"},
         )
+
     return {"message": "Post retrieved successfully", "data": post}
 
 
@@ -92,7 +96,9 @@ def update_post(
             status_code=status.HTTP_400_BAD_REQUEST,
             detail={"message": "Post payload is required !"},
         )
+
     post = session.get(Posts, post_id)
+
     if post is None:
         raise HTTPException(
             status_code=status.HTTP_404_NOT_FOUND,
@@ -120,6 +126,7 @@ def delete_single_post(post_id: int, session: SessionDep):
             status_code=status.HTTP_404_NOT_FOUND,
             detail={"message": "Post unexisting or already deleted !"},
         )
+        
     session.delete(post)
     session.commit()
 
