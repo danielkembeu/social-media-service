@@ -67,7 +67,7 @@ app = FastAPI(
 
 # Get all posts
 @app.get("/posts", status_code=status.HTTP_200_OK)
-def get_posts():
+def get_all_posts():
     cursor.execute("""SELECT * FROM posts""")
     all_posts = cursor.fetchall()
     return {"message": "All posts retrieved!", "data": all_posts}
@@ -91,9 +91,9 @@ def create_post(payload: Post):
 
 
 # Get single post
-@app.get("/posts/{id}", status_code=status.HTTP_200_OK)
-def get_single_post(id: int):
-    cursor.execute("""SELECT * FROM posts WHERE id = %s""", (str(id)))
+@app.get("/posts/{post_id}", status_code=status.HTTP_200_OK)
+def get_single_post(post_id: int):
+    cursor.execute("""SELECT * FROM posts WHERE id = %s""", (str(post_id)))
     retrieved_post = cursor.fetchone()
 
     return {"message": "Post retrieved successfully", "data": retrieved_post}
@@ -126,9 +126,9 @@ def update_post(post_id: int, payload: Optional[Post] = Body()):
 
 
 # Delete a single post
-@app.delete("/posts/{id}", status_code=status.HTTP_204_NO_CONTENT)
-def delete_single_post(id: int):
-    cursor.execute("""DELETE FROM posts WHERE id = %s RETURNING *""", (str(id)))
+@app.delete("/posts/{post_id}", status_code=status.HTTP_204_NO_CONTENT)
+def delete_single_post(post_id: int):
+    cursor.execute("""DELETE FROM posts WHERE id = %s RETURNING *""", (str(post_id)))
     deleted_post = cursor.fetchone()
 
     print(deleted_post)
