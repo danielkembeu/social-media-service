@@ -34,6 +34,7 @@ def get_session():
         yield session
 
 
+# Dependency to inject
 SessionDep = Annotated[Session, Depends(get_session)]
 
 # ==============================================================================================================================================
@@ -88,9 +89,7 @@ def get_single_post(post_id: int, session: SessionDep):
 
 # Update post
 @app.put("/posts/{post_id}", status_code=status.HTTP_200_OK)
-def update_post(
-    post_id: int, session: SessionDep, payload: Optional[Posts] = Body(...)
-):
+def update_post(post_id: int, session: SessionDep, payload: Optional[Posts] = Body()):
     if payload is None:
         raise HTTPException(
             status_code=status.HTTP_400_BAD_REQUEST,
@@ -126,7 +125,7 @@ def delete_single_post(post_id: int, session: SessionDep):
             status_code=status.HTTP_404_NOT_FOUND,
             detail={"message": "Post unexisting or already deleted !"},
         )
-        
+
     session.delete(post)
     session.commit()
 
